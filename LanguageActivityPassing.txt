@@ -1,0 +1,132 @@
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Languages',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: LanguageSelectionPage(),
+    );
+  }
+}
+
+class LanguageSelectionPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Languages'),
+        backgroundColor: Colors.blue.shade300,
+      ),
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              LanguageButton('Java', Colors.orangeAccent),
+              SizedBox(height: 20),
+              LanguageButton('C++', Colors.lightBlueAccent),
+              SizedBox(height: 20),
+              LanguageButton('Python', Colors.greenAccent),
+              SizedBox(height: 20),
+              LanguageButton('JavaScript', Colors.purpleAccent),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class LanguageButton extends StatelessWidget {
+  final String language;
+  final Color buttonColor;
+
+  LanguageButton(this.language, this.buttonColor);
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 10,
+      child: ElevatedButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => LanguageDetailPage(language),
+            ),
+          );
+        },
+        style: ElevatedButton.styleFrom(
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20), backgroundColor: buttonColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+        ),
+        child: Text(
+          language,
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
+        ),
+      ),
+    );
+  }
+}
+
+class LanguageDetailPage extends StatelessWidget {
+  final String language;
+
+  LanguageDetailPage(this.language);
+
+  @override
+  Widget build(BuildContext context) {
+    String logoPath = '';
+    switch (language) {
+      case 'Java':
+        logoPath = 'assets/java_logo.png';
+        break;
+      case 'C++':
+        logoPath = 'assets/cpp_logo.png';
+        break;
+      case 'Python':
+        logoPath = 'assets/python_logo.png';
+        break;
+      case 'JavaScript':
+        logoPath = 'assets/javascript_logo.png';
+        break;
+    }
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Languages"),
+        backgroundColor: Colors.blue.shade300,
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset(
+              logoPath,
+              width: 300,
+              height: 300,
+            ),
+            SizedBox(height: 20),
+            Text(
+              language,
+              style: TextStyle(fontSize: 24),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
