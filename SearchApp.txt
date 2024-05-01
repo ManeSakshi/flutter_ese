@@ -1,0 +1,121 @@
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Auto-complete Search Bar',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: MyHomePage(),
+    );
+  }
+}
+
+class MyHomePage extends StatefulWidget {
+  @override
+  _MyHomePageState createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  TextEditingController _searchController = TextEditingController();
+  List<String> _searchResults = [
+    'Flutter Development',
+    'Google Maps API',
+    'Mobile App Design',
+    'Firebase Authentication',
+    'Dart Programming',
+    'UI/UX Design',
+    'State Management',
+    'HTTP Requests',
+    'Widget Testing',
+    'Animation in Flutter',
+  ];
+
+  List<String> _suggestions = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _suggestions = _searchResults;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("SearchApp"),
+        backgroundColor: Colors.blue.shade300,
+      ),
+      body: Column(
+        children: [
+          Padding(
+            padding: EdgeInsets.all(20.0),
+            child: TextField(
+              controller: _searchController,
+              decoration: InputDecoration(
+                hintText: 'Search here',
+                prefixIcon: Icon(Icons.search),
+                suffixIcon: IconButton(
+                  icon: Icon(Icons.clear),
+                  onPressed: () {
+                    _searchController.clear();
+                    setState(() {
+                      _suggestions = _searchResults;
+                    });
+                  },
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+              ),
+              onChanged: (value) {
+                setState(() {
+                  _suggestions = _getSearchResults(value);
+                });
+              },
+            ),
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: _suggestions.length,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  title: Text(_suggestions[index]),
+                  onTap: () {
+                    // Perform search when suggestion is tapped
+                    _searchController.text = _suggestions[index];
+                    _performSearch();
+                  },
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _performSearch,
+        child: Icon(Icons.search),
+      ),
+    );
+  }
+
+  void _performSearch() {
+    // Handle search operation here
+    String query = _searchController.text;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Performing search for: $query')),
+    );
+  }
+
+  List<String> _getSearchResults(String query) {
+    // Dummy method to generate search suggestions
+    return _searchResults.where((result) => result.toLowerCase().contains(query.toLowerCase())).toList();
+  }
+}
