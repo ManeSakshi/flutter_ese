@@ -1,0 +1,86 @@
+# Add   battery: ^2.0.3 in dependencies
+
+import 'package:flutter/material.dart';
+import 'package:battery/battery.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Battery Level Demo',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: BatteryLevelPage(),
+    );
+  }
+}
+
+class BatteryLevelPage extends StatefulWidget {
+  @override
+  _BatteryLevelPageState createState() => _BatteryLevelPageState();
+}
+
+class _BatteryLevelPageState extends State<BatteryLevelPage> {
+  Battery _battery = Battery();
+  int _batteryLevel = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _battery.onBatteryStateChanged.listen((BatteryState state) {
+      _updateBatteryLevel();
+    });
+    _updateBatteryLevel();
+  }
+
+  Future<void> _updateBatteryLevel() async {
+    int batteryLevel = await _battery.batteryLevel;
+    setState(() {
+      _batteryLevel = batteryLevel;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Battery Level'),
+        backgroundColor: Colors.blue.shade300,
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              'Battery Level: $_batteryLevel%',
+              style: TextStyle(fontSize: 26,fontWeight: FontWeight.w600),
+            ),
+            SizedBox(height: 30),
+            Container(
+              width: 200,
+              height: 20,
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: LinearProgressIndicator(
+                  value: _batteryLevel / 100,
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+                  backgroundColor: Colors.grey[300],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
