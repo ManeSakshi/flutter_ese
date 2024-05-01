@@ -1,0 +1,75 @@
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Gender Selection',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: GenderSelectionPage(),
+    );
+  }
+}
+
+class GenderSelectionPage extends StatefulWidget {
+  @override
+  _GenderSelectionPageState createState() => _GenderSelectionPageState();
+}
+
+class _GenderSelectionPageState extends State<GenderSelectionPage> {
+  String _selectedGender = 'male';
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Select Gender'),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Radio(
+                  value: 'male',
+                  groupValue: _selectedGender,
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedGender = value!;
+                    });
+                  },
+                ),
+                Text('Male'),
+                SizedBox(width: 20),
+                Radio(
+                  value: 'female',
+                  groupValue: _selectedGender,
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedGender = value!;
+                    });
+                  },
+                ),
+                Text('Female'),
+              ],
+            ),
+            SizedBox(height: 20),
+            Icon(
+              _selectedGender == 'male' ? Icons.male : Icons.female,
+              size: 100,
+              color: _selectedGender == 'male' ? Colors.blue : Colors.pink,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
