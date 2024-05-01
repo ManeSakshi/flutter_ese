@@ -1,0 +1,62 @@
+# Add   fluttertoast: ^8.2.1 in dependencies
+
+import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart'; // Import for toast message
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Scrollable List with Toast',
+      debugShowCheckedModeBanner: false,
+      home: MyHomePage(),
+    );
+  }
+}
+
+class MyHomePage extends StatefulWidget {
+  @override
+  _MyHomePageState createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  final List<String> items = ['Java', 'Dart', 'Kotlin', 'Python', 'Ruby', 'React'];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Scrollable List'),
+        backgroundColor: Colors.blue.shade300,
+      ),
+      body: ListView.builder(
+        itemCount: items.length,
+        itemBuilder: (context, index) {
+          final item = items[index];
+          return Column(
+            children: <Widget>[
+              ListTile(
+                title: Text(item),
+                onTap: () {
+                  Fluttertoast.showToast(
+                    msg: "You clicked on $item",
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.CENTER,
+                  );
+                },
+              ),
+              Divider( // Add a Divider between items
+                height: 50, // Specify the height of the Divider
+                color: Colors.grey, // Specify the color of the Divider
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+}
