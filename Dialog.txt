@@ -1,0 +1,67 @@
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Dialog',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+      ),
+      home: HomePage(),
+    );
+  }
+}
+
+class HomePage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Dialog'),
+        backgroundColor: Colors.blue.shade300,
+      ),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () {
+            // Show a dialog when the button is pressed
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text('Hello There!!!'),
+                  content: SingleChildScrollView(
+                    child: ListBody(
+                      children: <Widget>[
+                        Text('This is a simple dialog example.'),
+                        Text('We can add multiple widgets here.'),
+                      ],
+                    ),
+                  ),
+                  actions: <Widget>[
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop(); // Close the dialog
+                      },
+                      child: Text('OK'),
+                    ),
+                  ],
+                );
+              },
+            );
+          },
+          child: Text('Show Dialog',style: TextStyle(color: Colors.black,fontSize: 20),),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.blueAccent, // Background color
+          ),
+        ),
+      ),
+    );
+  }
+}
