@@ -1,0 +1,64 @@
+# Add  audioplayers: ^0.20.1 in pubspec.yaml under dev_dependencies:
+
+import 'package:flutter/material.dart';
+import 'package:audioplayers/audioplayers.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Sound Player',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: SoundPlayerScreen(),
+    );
+  }
+}
+
+class SoundPlayerScreen extends StatefulWidget {
+  @override
+  _SoundPlayerScreenState createState() => _SoundPlayerScreenState();
+}
+
+class _SoundPlayerScreenState extends State<SoundPlayerScreen> {
+  late AudioCache _cache;
+
+  @override
+  void initState() {
+    super.initState();
+    _cache = AudioCache();
+  }
+
+  void playSound(String soundPath) async {
+    await _cache.play(soundPath);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Sound Player'),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            ElevatedButton(
+              onPressed: () => playSound('assets/sounds/sound1.mp3'),
+              child: Text('Play Sound 1'),
+            ),
+            ElevatedButton(
+              onPressed: () => playSound('assets/sounds/sound2.mp3'),
+              child: Text('Play Sound 2'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
