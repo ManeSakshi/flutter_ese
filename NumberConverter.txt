@@ -1,0 +1,148 @@
+# Add hex: ^0.2.0 in pubspec.yaml under dev_dependencies
+
+import 'package:flutter/material.dart';
+import 'package:hex/hex.dart';
+
+void main() {
+  runApp(NumberConverterApp());
+}
+
+class NumberConverterApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Number Converter',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: NumberConverterScreen(),
+    );
+  }
+}
+
+class NumberConverterScreen extends StatefulWidget {
+  @override
+  _NumberConverterScreenState createState() => _NumberConverterScreenState();
+}
+
+class _NumberConverterScreenState extends State<NumberConverterScreen> {
+  String _input = '';
+  String _output = 'Result';
+  bool _isBinary = true;
+
+  void _convertNumber() {
+    setState(() {
+      if (_isBinary) {
+        _output = convertBinaryToHex(_input);
+      } else {
+        _output = convertHexToBinary(_input);
+      }
+    });
+  }
+
+  String convertBinaryToHex(String binary) {
+    try {
+      int decimal = int.parse(binary, radix: 2);
+      return HEX.encode([decimal]);
+    } catch (e) {
+      return 'Invalid binary number';
+    }
+  }
+
+  String convertHexToBinary(String hex) {
+    try {
+      int decimal = int.parse(hex, radix: 16);
+      // Convert to binary with at least 12 bits for each hexadecimal digit
+      return decimal.toRadixString(2).padLeft(hex.length * 4, '0');
+    } catch (e) {
+      return 'Invalid hexadecimal number';
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Number Converter'),
+        backgroundColor: Colors.blue.shade300,
+      ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          SizedBox(height: 20,),
+          Container(
+            padding: EdgeInsets.all(16.0),
+            child: Text(
+              'Enter Number',
+              style: TextStyle(color: Colors.black, fontSize: 20.0,fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.all(16.0),
+            child: TextField(
+              onChanged: (value) {
+                setState(() {
+                  _input = value;
+                });
+              },
+              decoration: InputDecoration(
+                hintText: 'Enter number',
+                border: OutlineInputBorder(),
+                contentPadding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+              ),
+            ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Text(
+                  _isBinary ? 'Binary' : 'Hex',
+                  style: TextStyle(fontSize: 16.0),
+                ),
+              ),
+              IconButton(
+                icon: Icon(Icons.swap_horiz),
+                onPressed: () {
+                  setState(() {
+                    _isBinary = !_isBinary;
+                  });
+                },
+              ),
+            ],
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 150.0),
+            child: ElevatedButton(
+              onPressed: _convertNumber,
+              child: Text(
+                'Convert',
+                style: TextStyle(color: Colors.black, fontSize: 18.0),
+              ),
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
+                padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
+                  EdgeInsets.symmetric(horizontal: 20.0,vertical: 20.0),
+                ),
+              ),
+            ),
+          ),
+          Expanded(
+            child: Container(
+              color: Colors.grey[200],
+              alignment: Alignment.center,
+              padding: EdgeInsets.all(16.0),
+              child: Text(
+                _output,
+                style: TextStyle(fontSize: 20.0),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
