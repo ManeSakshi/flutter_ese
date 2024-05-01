@@ -1,0 +1,229 @@
+# First add   sqflite: ^2.0.0 to pubspec.yaml under dependencies
+
+
+
+
+
+# Create database_helper.dart file in lib and add below code
+import 'dart:async';
+import 'package:sqflite/sqflite.dart';
+import 'package:path/path.dart';
+
+class DatabaseHelper {
+  static final _databaseName = 'todo.db';
+  static final _databaseVersion = 1;
+
+  static final table = 'todo';
+
+  static final columnId = 'id';
+  static final columnName = 'name';
+  static final columnDone = 'done';
+
+  // Singleton instance
+  DatabaseHelper._privateConstructor();
+  static final DatabaseHelper instance = DatabaseHelper._privateConstructor();
+
+  // Database object
+  static Database? _database;
+  Future<Database> get database async {
+    if (_database != null) return _database!;
+    _database = await _initDatabase();
+    return _database!;
+  }
+
+  // Initialize database
+  Future<Database> _initDatabase() async {
+    final path = await getDatabasesPath();
+    final databasePath = join(path, _databaseName);
+    return await openDatabase(databasePath,
+        version: _databaseVersion, onCreate: _onCreate);
+  }
+
+  // Create table
+  Future _onCreate(Database db, int version) async {
+    await db.execute('''
+      CREATE TABLE $table (
+        $columnId INTEGER PRIMARY KEY AUTOINCREMENT,
+        $columnName TEXT NOT NULL,
+        $columnDone INTEGER NOT NULL
+      )
+    ''');
+  }
+
+  // Insert new todo
+  Future<int> insert(Map<String, dynamic> row) async {
+    Database db = await instance.database;
+    return await db.insert(table, row);
+  }
+
+  // Query all todos
+  Future<List<Map<String, dynamic>>> queryAll() async {
+    Database db = await instance.database;
+    return await db.query(table);
+  }
+
+  // Update todo
+  Future<int> update(Map<String, dynamic> row) async {
+    Database db = await instance.database;
+    int id = row[columnId];
+    return await db.update(table, row, where: '$columnId = ?', whereArgs: [id]);
+  }
+
+  // Delete todo
+  Future<int> delete(int id) async {
+    Database db = await instance.database;
+    return await db.delete(table, where: '$columnId = ?', whereArgs: [id]);
+  }
+}
+
+
+
+
+
+# Create a todo.dart file to define the Todo model class in lib.
+class Todo {
+  int? id;
+  String name;
+  int done;
+
+  Todo({
+    this.id,
+    required this.name,
+    required this.done,
+  });
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'name': name,
+      'done': done,
+    };
+  }
+}
+
+
+
+
+
+
+#update main.dart file
+import 'package:flutter/material.dart';
+import 'database_helper.dart';
+import 'todo.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Todo App',
+      debugShowCheckedModeBanner: false,
+      home: TodoListScreen(),
+    );
+  }
+}
+
+class TodoListScreen extends StatefulWidget {
+  @override
+  _TodoListScreenState createState() => _TodoListScreenState();
+}
+
+class _TodoListScreenState extends State<TodoListScreen> {
+  List<Todo> _todos = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchTodos();
+  }
+
+  Future<void> _fetchTodos() async {
+    final todos = await DatabaseHelper.instance.queryAll();
+    setState(() {
+      _todos = todos.map((todo) => Todo(
+        id: todo['id'],
+        name: todo['name'],
+        done: todo['done'],
+      )).toList();
+    });
+  }
+
+  Future<void> _addTodo() async {
+    final TextEditingController _textEditingController = TextEditingController();
+
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Add New Task'),
+          content: TextField(
+            controller: _textEditingController,
+            decoration: InputDecoration(hintText: 'Enter task name'),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                String taskName = _textEditingController.text.trim();
+                if (taskName.isNotEmpty) {
+                  final newTodo = Todo(name: taskName, done: 0);
+                  await DatabaseHelper.instance.insert(newTodo.toMap());
+                  _fetchTodos();
+                }
+                Navigator.of(context).pop();
+              },
+              child: Text('Add'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _toggleTodo(Todo todo) async {
+    todo.done = todo.done == 0 ? 1 : 0;
+    await DatabaseHelper.instance.update(todo.toMap());
+    _fetchTodos();
+  }
+
+  Future<void> _deleteTodo(Todo todo) async {
+    await DatabaseHelper.instance.delete(todo.id!);
+    _fetchTodos();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Todo List'), backgroundColor: Colors.blue.shade300,),
+      body: ListView.builder(
+        itemCount: _todos.length,
+        itemBuilder: (context, index) {
+          final todo = _todos[index];
+          return ListTile(
+            title: Text(todo.name),
+            leading: Checkbox(
+              value: todo.done == 1,
+              onChanged: (_) => _toggleTodo(todo),
+            ),
+            trailing: IconButton(
+              icon: Icon(Icons.delete),
+              onPressed: () => _deleteTodo(todo),
+            ),
+          );
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _addTodo,
+        child: Icon(Icons.add),
+      ),
+    );
+  }
+}
