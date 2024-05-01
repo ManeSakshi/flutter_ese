@@ -1,0 +1,154 @@
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Button UI',
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text('Button UI'),
+          backgroundColor: Colors.blue.shade300,
+        ),
+        body: MyHomePage(),
+      ),
+    );
+  }
+}
+
+class MyHomePage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          SizedBox(height: 10,),
+          Padding(
+            padding: const EdgeInsets.all(5.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('BUTTON 1'),
+                      ),
+                    );
+                  },
+                  child: Text('Button 1',style: TextStyle(color: Colors.black,fontSize: 20),),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.pink.shade200,
+                  ),
+                ),
+                SizedBox(width: 150,),
+                ElevatedButton(
+                  onPressed: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('BUTTON 2'),
+                      ),
+                    );
+                  },
+                  child: Text('Button 2',style: TextStyle(color: Colors.black,fontSize: 20),),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.pink.shade200,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(height: 220),
+          Padding(
+            padding: const EdgeInsets.all(5.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('BUTTON 3'),
+                      ),
+                    );
+                  },
+                  child: Text('Button 3',style: TextStyle(color: Colors.black,fontSize: 20),),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.pink.shade200,
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('BUTTON 4'),
+                      ),
+                    );
+                  },
+                  child: Text('Button 4',style: TextStyle(color: Colors.black,fontSize: 20),),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.pink.shade200,
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('BUTTON 5'),
+                      ),
+                    );
+                  },
+                  child: Text('Button 5',style: TextStyle(color: Colors.black,fontSize: 20),),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.pink.shade200,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(height: 220),
+          Padding(
+            padding: const EdgeInsets.all(5.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('BUTTON 6'),
+                      ),
+                    );
+                  },
+                  child: Text('Button 6',style: TextStyle(color: Colors.black,fontSize: 20),),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.pink.shade200,
+                  ),
+                ),
+                SizedBox(width: 150),
+                ElevatedButton(
+                  onPressed: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('BUTTON 7'),
+                      ),
+                    );
+                  },
+                  child: Text('Button 7',style: TextStyle(color: Colors.black,fontSize: 20),),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.pink.shade200,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
