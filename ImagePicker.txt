@@ -1,0 +1,70 @@
+# Add image_picker: ^0.8.6 to pubspec.yaml under dev_dependencies:
+
+import 'dart:io';
+
+import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+
+void main() {
+  runApp(ImagePickerApp());
+}
+
+class ImagePickerApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Image Picker App',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: ImagePickerScreen(),
+    );
+  }
+}
+
+class ImagePickerScreen extends StatefulWidget {
+  @override
+  _ImagePickerScreenState createState() => _ImagePickerScreenState();
+}
+
+class _ImagePickerScreenState extends State<ImagePickerScreen> {
+  File? _image;
+
+  final picker = ImagePicker();
+
+  Future<void> _getImage() async {
+    final pickedFile = await picker.getImage(source: ImageSource.gallery);
+
+    setState(() {
+      if (pickedFile != null) {
+        _image = File(pickedFile.path);
+      } else {
+        print('No image selected.');
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Image Picker App'),
+        backgroundColor: Colors.blue.shade300,
+      ),
+      body: Center(
+        child: _image == null
+            ? Text('No image selected.')
+            : Image.file(
+          _image!,
+          height: 300,
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _getImage,
+        tooltip: 'Pick Image',
+        child: Icon(Icons.add_a_photo),
+      ),
+    );
+  }
+}
