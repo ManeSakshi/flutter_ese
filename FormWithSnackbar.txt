@@ -8,7 +8,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Form Example',
+      title: 'Registration Form',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primaryColor: Colors.blue,
         scaffoldBackgroundColor: Colors.white,
@@ -38,6 +39,14 @@ class _MyFormState extends State<MyForm> {
   DateTime? _selectedDate;
   TextEditingController _emailController = TextEditingController();
   TextEditingController _phoneController = TextEditingController();
+  List<String> _subjects = [
+    'Android App Development',
+    'Java',
+    'C++',
+    'Flutter',
+    'Web Development',
+  ];
+  List<bool> _subjectCheckList = List<bool>.filled(5, false);
 
   setSelectedRadio(String value) {
     setState(() {
@@ -55,12 +64,9 @@ class _MyFormState extends State<MyForm> {
     if (picked != null && picked != _selectedDate) {
       setState(() {
         _selectedDate = picked;
-        _birthdateController.text = _selectedDate.toString().substring(0, 10);
       });
     }
   }
-
-  TextEditingController _birthdateController = TextEditingController();
 
   void _showSnackbar(BuildContext context, String message) {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -75,7 +81,8 @@ class _MyFormState extends State<MyForm> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Flutter Form Example'),
+        title: Text('Registration Form'),
+        backgroundColor: Colors.blue.shade300,
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
@@ -95,7 +102,7 @@ class _MyFormState extends State<MyForm> {
               ),
               SizedBox(height: 20),
               Text(
-                'PRN (Prescribed Registration Number):',
+                'PRN:',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               TextField(
@@ -115,10 +122,14 @@ class _MyFormState extends State<MyForm> {
                 },
                 child: IgnorePointer(
                   child: TextField(
-                    controller: _birthdateController,
                     decoration: InputDecoration(
                       hintText: 'Select your birthdate',
                       suffixIcon: Icon(Icons.calendar_today),
+                    ),
+                    controller: TextEditingController(
+                      text: _selectedDate != null
+                          ? _selectedDate!.toString().substring(0, 10)
+                          : '',
                     ),
                   ),
                 ),
@@ -170,6 +181,25 @@ class _MyFormState extends State<MyForm> {
               ),
               SizedBox(height: 20),
               Text(
+                'Subjects:',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              Column(
+                children: List.generate(
+                  _subjects.length,
+                      (index) => CheckboxListTile(
+                    title: Text(_subjects[index]),
+                    value: _subjectCheckList[index],
+                    onChanged: (value) {
+                      setState(() {
+                        _subjectCheckList[index] = value!;
+                      });
+                    },
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
+              Text(
                 'Email:',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
@@ -196,15 +226,16 @@ class _MyFormState extends State<MyForm> {
               Center(
                 child: ElevatedButton(
                   onPressed: () {
-                    // Implement form submission logic here
                     _showSnackbar(context, 'Form submitted!');
+                    // Submit form logic
                   },
                   child: Text(
                     'Submit',
                     style: TextStyle(fontSize: 18),
                   ),
                   style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.white, backgroundColor: Colors.blue.shade300,
+                    foregroundColor: Colors.black,
+                    backgroundColor: Colors.blue.shade300,
                     padding: EdgeInsets.symmetric(horizontal: 40, vertical: 16),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
@@ -223,7 +254,6 @@ class _MyFormState extends State<MyForm> {
   void dispose() {
     _nameController.dispose();
     _prnController.dispose();
-    _birthdateController.dispose();
     _emailController.dispose();
     _phoneController.dispose();
     super.dispose();
