@@ -1,0 +1,81 @@
+# Add intl: ^0.17.0 in pubspec.yaml below dev_dependencies:
+
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Date and Time',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: DateTimeDisplay(),
+    );
+  }
+}
+
+class DateTimeDisplay extends StatefulWidget {
+  @override
+  _DateTimeDisplayState createState() => _DateTimeDisplayState();
+}
+
+class _DateTimeDisplayState extends State<DateTimeDisplay> {
+  String _currentDateTime = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _updateDateTime();
+  }
+
+  void _updateDateTime() {
+    setState(() {
+      _currentDateTime = DateFormat('yyyy-MM-dd \n HH:mm:ss').format(DateTime.now());
+    });
+
+    // Update date and time every second
+    Future.delayed(Duration(seconds: 1), () {
+      _updateDateTime();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Date and Time'),
+        backgroundColor: Colors.blue.shade300,
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              'Current Date and Time',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Colors.green,
+              ),
+            ),
+            SizedBox(height: 20),
+            Text(
+              _currentDateTime,
+              style: TextStyle(
+                fontSize: 30,
+                color: Colors.black,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
