@@ -1,0 +1,97 @@
+# Add url_launcher: ^6.0.0 in pubspec.yaml under dev_dependencies
+
+import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+// Data model class
+class TableRow {
+  final String language;
+  final String creator;
+  final String reference;
+
+  TableRow({required this.language, required this.creator, required this.reference});
+}
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Table Example',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: MyHomePage(),
+    );
+  }
+}
+
+class MyHomePage extends StatelessWidget {
+  final List<TableRow> tableData = [
+    TableRow(language: 'Java', creator: 'James Gosling', reference: 'https://www.java.com'),
+    TableRow(language: 'Python', creator: 'Guido van Rossum', reference: 'https://www.python.org'),
+    TableRow(language: 'C++', creator: 'Bjarne Stroustrup', reference: 'https://www.cplusplus.com'),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Table Example'),
+        backgroundColor: Colors.indigo,
+      ),
+      body: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: DataTable(
+          columns: [
+            DataColumn(label: Text('Language', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),)),
+            DataColumn(label: Text('Creator', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),)),
+            DataColumn(label: Text('reference', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),)),
+          ],
+          rows: tableData.map((data) => DataRow(
+            cells: [
+              DataCell(
+                GestureDetector(
+                  child: Text(data.language),
+
+                  onTap: () {
+                    _launchURL(data.reference);
+                  },
+                ),
+              ),
+              DataCell(
+                GestureDetector(
+                  child: Text(data.creator),
+                  onTap: () {
+                    _launchURL(data.reference);
+                  },
+                ),
+              ),
+              DataCell(
+                GestureDetector(
+                  child: Text(data.reference),
+                  onTap: () {
+                    _launchURL(data.reference);
+                  },
+                ),
+              ),
+            ],
+          )).toList(),
+        ),
+      ),
+    );
+  }
+
+  // Function to open URL in browser
+  void _launchURL(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+}
