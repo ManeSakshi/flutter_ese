@@ -1,4 +1,4 @@
-# Add url_launcher: ^6.0.0 in pubspec.yaml under dev_dependencies
+# Add url_launcher: ^6.2.6 in pubspec.yaml under dev_dependencies
 
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
